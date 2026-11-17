@@ -1,6 +1,7 @@
 CREATE DATABASE banking_sysdb;  -- create database 
 USE banking_sysdb; -- use database
 
+
 SHOW DATABASES;    -- see the databases
 SHOW TABLES;      -- show the tables in database
 create table CUSTOMERS(    -- created table customers
@@ -267,4 +268,99 @@ FROM ACCOUNTS -- SELECT THE TABLE NAME
 ORDER BY BALANANCE DESC LIMIT 1; -- DEFINES THE ORDER OF THE BALANCE IN DESENDING ORDER BY ONLY LIMIT OF 1.
 
 SELECT * FROM CUSTOMERS;
+-- which accounts have null values
+select * from  accounts where  balanance = null;
+
+select branchid,count(*) as total_accounts
+from accounts 
+group by BRANCHID
+order by total_accounts desc limit 1;
+
+-- Transaction Analysis
+-- Total  transaction amount?
+select sum(amount) as total_transaction_amt
+from transactions;
+
+-- How many deposits/withdrawals/transfer are there?
+select TRANSACTIONTYPE, count(TRANSACTIONID)
+from transactions 
+group by TRANSACTIONTYPE;
+
+-- which transaction type has the highest volume?
+select TRANSACTIONTYPE, sum(amount) total_amount
+from transactions 
+group by TRANSACTIONTYPE
+order by total_amount desc limit 1;
+
+-- highest transaction by an accounts
+select ACCOUNTID,count(TRANSACTIONID) as total_transaction 
+from transactions 
+group by ACCOUNTID
+order by total_transaction desc limit 1;
+
+-- avg tansaction amount
+select avg(amount) from transactions;
+select *from  transactions;
+
+select * from transactions 
+where transactiondate is null or amount is null;
+
+-- laon analysis
+
+-- total laon amount
+select sum(loanamount) total_loans 
+from loans;
+
+-- which customer has the largest loan?
+select customerid ,sum(loanamount) as total_loan
+from loans 
+group by customerid
+order by total_loan desc limit 1;
+
+-- which loan has the highest interest rate?
+
+select max(interestrate) highest_interest_rate 
+from loans;
+
+-- which laon are still active?
+select * from loans;
+
+select loanid from loans 
+where ENDDATE >= STARTDATE;
+
+-- which customers has multiple loans
+select customerid ,count(loanid) as total_loans 
+from loans 
+group by customerid
+having total_loans > 1;
+
+-- avg loan amt
+select avg(loanamount) as average_loan_amount
+from loans;
+
+-- branch analysis
+-- which branch has the most cutomers/accounts?
+
+-- branch with most accounts
+
+select branchid,count(accountid) as total_account
+from  accounts 
+group by BRANCHid 
+order by total_account desc limit 1;
+ 
+-- branch with most customers
+
+select branchid ,count(customerid) as total_customers
+from accounts
+group by branchid
+order by total_customers desc limit 1;
+
+-- which branch has the highest total account balance?
+select branchid , sum(balanance) as total_balance
+from accounts 
+group by branchid 
+order by total_balance desc limit 1;
+
+
+
 
